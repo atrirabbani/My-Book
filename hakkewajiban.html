@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPI Pendidikan Pancasila - Hak & Kewajiban Warga Negara</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins & Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#6C5CE7',
+                            pink: '#FD79A8',
+                            yellow: '#FDCB6E',
+                            teal: '#00CEC9',
+                            blue: '#0984E3',
+                            dark: '#2D3436'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Fredoka', 'sans-serif'],
+                        body: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F4F7FE;
+            overflow-x: hidden;
+        }
+        .font-display {
+            font-family: 'Fredoka', cursive;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        .btn-bounce:hover {
+            transform: translateY(-4px);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-bounce:active {
+            transform: translateY(2px);
+        }
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(108, 92, 231, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(108, 92, 231, 0.8); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6C5CE7;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between selection:bg-brand-pink selection:text-white">
+
+    <!-- AUDIO SYNTHESIZER (WEB AUDIO API) FOR SFX -->
+    <script>
+        // Web Audio API Sound Effects Generator
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            const now = audioCtx.currentTime;
+            
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(150, now + 0.2);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } else if (type === 'badge') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, now); // D5
+                osc.frequency.setValueAtTime(880, now + 0.15); // A5
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now);
+                osc.stop(now + 0.5);
+            }
+        }
+    </script>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-100 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-purple to-brand-pink flex items-center justify-center text-white font-display text-xl shadow-md">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                </div>
+                <div>
+                    <h1 class="font-display text-xl font-bold text-slate-800 leading-tight">HAK & KEWAJIBAN</h1>
+                    <p class="text-xs text-brand-purple font-semibold">Pendidikan Pancasila Kelas 8 SMP</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1.5 rounded-2xl">
+                <button onclick="switchTab('home')" id="nav-home" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-house mr-1"></i> Beranda
+                </button>
+                <button onclick="switchTab('materi')" id="nav-materi" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-book-open mr-1"></i> Materi Base
+                </button>
+                <button onclick="switchTab('contoh')" id="nav-contoh" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-layer-group mr-1"></i> 4 Lingkungan
+                </button>
+                <button onclick="switchTab('kasus')" id="nav-kasus" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-gamepad mr-1"></i> Tantangan Ops
+                </button>
+                <button onclick="switchTab('kuis')" id="nav-kuis" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-trophy mr-1"></i> Kuis Arena
+                </button>
+            </nav>
+
+            <!-- User Progress Badge -->
+            <div class="flex items-center gap-2">
+                <div class="bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 border border-amber-200">
+                    <i class="fa-solid fa-star text-amber-500"></i>
+                    <span id="user-score">0 XP</span>
+                </div>
+                <button onclick="openModal('modal-petunjuk')" class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
+                    <i class="fa-solid fa-circle-info"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- ================= HALAMAN 0: BERANDA / SPLASH ================= -->
+        <section id="page-home" class="tab-content transition-all duration-300">
+            <div class="bg-gradient-to-br from-indigo-600 via-brand-purple to-purple-800 rounded-3xl p-8 md:p-12 text-white shadow-xl relative overflow-hidden my-4">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-white text-9xl font-bold">
+                    <i class="fa-solid fa-balance-scale"></i>
+                </div>
+                
+                <div class="max-w-2xl relative z-10">
+                    <span class="inline-block bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-4 border border-white/30">
+                        <i class="fa-solid fa-rocket mr-1"></i> Kurikulum Merdeka - Fase D
+                    </span>
+                    <h1 class="font-display text-4xl md:text-5xl font-bold leading-tight mb-4">
+                        Hak & Kewajiban: <br><span class="text-brand-yellow">Seimbang dalam Kehidupan!</span>
+                    </h1>
+                    <p class="text-indigo-100 text-base md:text-lg mb-8 leading-relaxed">
+                        Hai Sahabat Pancasila! 👋 Selamat datang di Media Pembelajaran Interaktif. Yuk, kita bedah rahasia jadi warga negara kece yang taat aturan tanpa kehilangan hak-hak keren kita!
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="switchTab('materi')" class="btn-bounce bg-brand-yellow text-slate-900 font-display font-bold px-8 py-4 rounded-2xl shadow-lg hover:bg-amber-300 transition flex items-center gap-3 text-lg">
+                            <i class="fa-solid fa-play"></i> Mulai Petualangan
+                        </button>
+                        <button onclick="openModal('modal-petunjuk')" class="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-4 rounded-2xl border border-white/20 transition flex items-center gap-2">
+                            <i class="fa-solid fa-compass"></i> Petunjuk Belajar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Highlights -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div onclick="switchTab('materi')" class="glass-card p-6 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer border-t-4 border-t-brand-teal group">
+                    <div class="w-12 h-12 rounded-xl bg-teal-100 text-brand-teal flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-2">1. Konsep Resiprokal</h3>
+                    <p class="text-slate-600 text-sm">Pahami kenapa hak dan kewajiban itu ibarat dua sisi mata uang yang nggak bisa dipisah!</p>
+                </div>
+
+                <div onclick="switchTab('contoh')" class="glass-card p-6 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer border-t-4 border-t-brand-pink group">
+                    <div class="w-12 h-12 rounded-xl bg-pink-100 text-brand-pink flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-house-user"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-2">2. Simulasi 4 Lingkungan</h3>
+                    <p class="text-slate-600 text-sm">Eksplorasi penerapannya di Rumah, Sekolah, Masyarakat, hingga Bernegara!</p>
+                </div>
+
+                <div onclick="switchTab('kasus')" class="glass-card p-6 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer border-t-4 border-t-brand-yellow group">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg mb-2">3. Tantangan Nyata</h3>
+                    <p class="text-slate-600 text-sm">Uji kepekaan sosial kamu dengan menyelesaikan masalah kehidupan sehari-hari!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= HALAMAN 1: KONSEP DASAR MATERI ================= -->
+        <section id="page-materi" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 mb-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-3 h-8 bg-brand-purple rounded-full"></span>
+                    <h2 class="font-display text-2xl md:text-3xl font-bold">Modul 1: Apa itu Hak & Kewajiban?</h2>
+                </div>
+
+                <!-- Analogi Anak SMP Card -->
+                <div class="bg-slate-50 border-2 border-indigo-100 rounded-2xl p-6 mb-8 relative">
+                    <div class="absolute -top-4 right-6 bg-brand-purple text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                        💡 Analogi Bro & Sis
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-indigo-900 mb-3">Bayangkan Kamu Lagi di Sekolah... 🎒</h3>
+                    <p class="text-slate-700 leading-relaxed mb-4">
+                        Kamu punya <strong>HAK</strong> buat dapet nilai ujian dari guru dan menikmati fasilitas kelas yang dingin/bersih. Tapi tunggu dulu! Nilai bagus dan kelas nyaman itu nggak jatuh dari langit. Kamu punya <strong>KEWAJIBAN</strong> buat belajar serius dan nggak buang sampah sembarangan di kelas.
+                    </p>
+                    <div class="bg-white p-4 rounded-xl border border-indigo-100 flex items-center gap-4">
+                        <div class="text-3xl">⚖️</div>
+                        <p class="text-sm text-slate-600 italic">
+                            "Kalau cuma mau Hak tanpa Jalani Kewajiban = Egois! Kalau cuma Jalani Kewajiban tanpa Dapet Hak = Nggak Adil!"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Definisi Dual Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Hak -->
+                    <div class="bg-emerald-50 border border-emerald-200 p-6 rounded-2xl relative overflow-hidden">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold text-xl">
+                                <i class="fa-solid fa-gift"></i>
+                            </div>
+                            <h4 class="font-display font-bold text-xl text-emerald-900">HAK</h4>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed">
+                            Segala sesuatu yang <strong>seharusnya diterima atau didapatkan</strong> oleh setiap manusia sejak lahir bahkan sebelum lahir, sebagai wujud martabatnya sebagai warga negara.
+                        </p>
+                    </div>
+
+                    <!-- Kewajiban -->
+                    <div class="bg-rose-50 border border-rose-200 p-6 rounded-2xl relative overflow-hidden">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg bg-rose-500 text-white flex items-center justify-center font-bold text-xl">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <h4 class="font-display font-bold text-xl text-rose-900">KEWAJIBAN</h4>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed">
+                            Segala sesuatu yang <strong>wajib dilaksanakan dengan penuh tanggung jawab</strong> demi menjaga keseimbangan kehidupan bermasyarakat dan bernegara.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Hubungan Resiprokal Interactive Flip/Card -->
+                <div class="bg-gradient-to-r from-purple-900 to-indigo-900 text-white p-6 md:p-8 rounded-2xl shadow-md">
+                    <h3 class="font-display font-bold text-xl text-brand-yellow mb-2">🔄 Hubungan Resiprokal (Timbal Balik)</h3>
+                    <p class="text-purple-200 text-sm mb-6">
+                        Hubungan resiprokal artinya: <strong>"Hak seseorang merupakan kewajiban bagi orang lain, dan pelaksanaan kewajiban seseorang akan melahirkan hak bagi orang lain."</strong>
+                    </p>
+
+                    <!-- Interactive Slider/Toggle Demo -->
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20">
+                        <h4 class="font-bold text-sm text-center mb-4 text-purple-200">KLIK UNTUK MELIHAT CONTOH SIMULASI RESIPROKAL:</h4>
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center">
+                            <div class="bg-white/20 p-4 rounded-xl flex-1 w-full">
+                                <span class="text-xs text-amber-300 font-bold block mb-1">TINDAKAN KAMU</span>
+                                <p class="font-semibold text-sm">Menjaga Ketenangan saat Pengendara Lain Lewat</p>
+                            </div>
+                            <div class="text-brand-yellow text-2xl font-bold">➡️</div>
+                            <div class="bg-white/20 p-4 rounded-xl flex-1 w-full">
+                                <span class="text-xs text-emerald-300 font-bold block mb-1">DAMPAK RESIPROKAL</span>
+                                <p class="font-semibold text-sm">Orang Lain Mendapatkan Hak atas Kenyamanan & Keamanan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Action Navigation -->
+            <div class="flex justify-between items-center">
+                <button onclick="switchTab('home')" class="px-5 py-2.5 rounded-xl bg-slate-200 text-slate-700 font-semibold hover:bg-slate-300 transition text-sm">
+                    ⬅️ Beranda
+                </button>
+                <button onclick="switchTab('contoh')" class="btn-bounce px-6 py-3 rounded-xl bg-brand-purple text-white font-semibold hover:bg-indigo-700 transition text-sm shadow-md">
+                    Lanjut: 4 Lingkungan Penerapan ➡️
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= HALAMAN 2: 4 LINGKUNGAN (INTERAKTIF TAB) ================= -->
+        <section id="page-contoh" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 mb-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-3 h-8 bg-brand-pink rounded-full"></span>
+                    <div>
+                        <h2 class="font-display text-2xl md:text-3xl font-bold">Modul 2: Hak & Kewajiban di 4 Lingkungan</h2>
+                        <p class="text-slate-500 text-sm">Pilih tab di bawah untuk menjelajahi contoh nyata penerapan!</p>
+                    </div>
+                </div>
+
+                <!-- Tabs 4 Lingkungan -->
+                <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-4 mb-6">
+                    <button onclick="switchEnvTab('keluarga')" id="env-btn-keluarga" class="env-tab-btn px-5 py-2.5 rounded-xl font-display font-bold text-sm transition-all bg-brand-purple text-white">
+                        🏡 Keluarga
+                    </button>
+                    <button onclick="switchEnvTab('sekolah')" id="env-btn-sekolah" class="env-tab-btn px-5 py-2.5 rounded-xl font-display font-bold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">
+                        🏫 Sekolah
+                    </button>
+                    <button onclick="switchEnvTab('masyarakat')" id="env-btn-masyarakat" class="env-tab-btn px-5 py-2.5 rounded-xl font-display font-bold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">
+                        👥 Masyarakat
+                    </button>
+                    <button onclick="switchEnvTab('negara')" id="env-btn-negara" class="env-tab-btn px-5 py-2.5 rounded-xl font-display font-bold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">
+                        🇮🇩 Negara & Bangsa
+                    </button>
+                </div>
+
+                <!-- Display Box Content -->
+                <div id="env-content-box" class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <!-- Inner JS Will Populate This -->
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="flex justify-between items-center">
+                <button onclick="switchTab('materi')" class="px-5 py-2.5 rounded-xl bg-slate-200 text-slate-700 font-semibold hover:bg-slate-300 transition text-sm">
+                    ⬅️ Modul 1
+                </button>
+                <button onclick="switchTab('kasus')" class="btn-bounce px-6 py-3 rounded-xl bg-brand-purple text-white font-semibold hover:bg-indigo-700 transition text-sm shadow-md">
+                    Lanjut: Tantangan Ops ➡️
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= HALAMAN 3: STUDI KASUS INTERAKTIF ================= -->
+        <section id="page-kasus" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-8 bg-brand-yellow rounded-full"></span>
+                        <div>
+                            <h2 class="font-display text-2xl md:text-3xl font-bold">Tantangan Studi Kasus Interaktif</h2>
+                            <p class="text-slate-500 text-sm">Bantu karakter di bawah mengambil keputusan yang tepat!</p>
+                        </div>
+                    </div>
+                    <span id="case-step" class="bg-indigo-100 text-brand-purple text-xs font-bold px-3 py-1.5 rounded-full">
+                        Kasus 1 dari 3
+                    </span>
+                </div>
+
+                <!-- Case Card Container -->
+                <div id="case-container" class="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+                    <!-- JS injects cases here -->
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="flex justify-between items-center">
+                <button onclick="switchTab('contoh')" class="px-5 py-2.5 rounded-xl bg-slate-200 text-slate-700 font-semibold hover:bg-slate-300 transition text-sm">
+                    ⬅️ 4 Lingkungan
+                </button>
+                <button onclick="switchTab('kuis')" class="btn-bounce px-6 py-3 rounded-xl bg-brand-purple text-white font-semibold hover:bg-indigo-700 transition text-sm shadow-md">
+                    Siap Kuis Arena 🏆
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= HALAMAN 4: KUIS EVALUASI ================= -->
+        <section id="page-kuis" class="tab-content hidden transition-all duration-300">
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 mb-8">
+                <!-- Quiz Screen Start -->
+                <div id="quiz-intro" class="text-center py-8">
+                    <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 animate-bounce">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h2 class="font-display text-3xl font-bold mb-2">Evaluasi Kuis Arena</h2>
+                    <p class="text-slate-600 max-w-md mx-auto mb-6 text-sm">
+                        Uji pemahamanmu dengan 5 soal seru! Setiap jawaban benar memberikan <strong>+20 XP</strong>.
+                    </p>
+                    <button onclick="startQuiz()" class="btn-bounce bg-brand-purple text-white font-display font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-indigo-700 transition">
+                        Mulai Kuis Sekarang 🔥
+                    </button>
+                </div>
+
+                <!-- Quiz Interactive Container -->
+                <div id="quiz-body" class="hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="quiz-progress-text">
+                            Soal 1 dari 5
+                        </div>
+                        <div class="w-1/3 bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div id="quiz-progress-bar" class="bg-brand-purple h-full w-1/5 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <h3 id="quiz-question" class="font-display font-bold text-lg md:text-xl text-slate-800 mb-6">
+                        <!-- Question content -->
+                    </h3>
+
+                    <div id="quiz-options" class="space-y-3 mb-6">
+                        <!-- Options content -->
+                    </div>
+
+                    <!-- Feedback Box -->
+                    <div id="quiz-feedback" class="hidden p-4 rounded-xl mb-6 text-sm font-medium">
+                        <!-- Feedback content -->
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button id="btn-next-quiz" onclick="nextQuestion()" class="hidden btn-bounce px-6 py-2.5 bg-brand-purple text-white rounded-xl font-bold text-sm">
+                            Soal Berikutnya ➡️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Result Screen -->
+                <div id="quiz-result" class="hidden text-center py-8">
+                    <div class="w-24 h-24 bg-purple-100 text-brand-purple rounded-full flex items-center justify-center text-5xl mx-auto mb-4">
+                        🎓
+                    </div>
+                    <h2 class="font-display text-3xl font-bold mb-2">Hasil Evaluasi Kamu</h2>
+                    <p class="text-slate-600 mb-6 text-sm">Berikut adalah pencapaian belajar kamu hari ini:</p>
+
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 max-w-sm mx-auto mb-8">
+                        <div class="text-5xl font-display font-bold text-brand-purple mb-2" id="final-score">0</div>
+                        <p class="text-xs text-slate-500 uppercase tracking-widest font-bold">Skor Akhir / 100</p>
+                        <p id="final-message" class="mt-4 text-sm font-semibold text-slate-700"></p>
+                    </div>
+
+                    <div class="flex justify-center gap-4">
+                        <button onclick="startQuiz()" class="px-6 py-3 bg-slate-200 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-300 transition">
+                            🔄 Ulangi Kuis
+                        </button>
+                        <button onclick="switchTab('home')" class="px-6 py-3 bg-brand-purple text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition">
+                            🏠 Kembali ke Beranda
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-100 py-4 mt-auto">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-xs text-slate-400 gap-2">
+            <p>© 2026 Media Pembelajaran Interaktif - Pendidikan Pancasila SMP Kelas 8</p>
+            <p>Dikembangkan dengan ❤️ untuk Kurikulum Merdeka</p>
+        </div>
+    </footer>
+
+    <!-- MODAL PETUNJUK USE -->
+    <div id="modal-petunjuk" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="closeModal('modal-petunjuk')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-brand-purple flex items-center justify-center text-lg font-bold">
+                    <i class="fa-solid fa-compass"></i>
+                </div>
+                <h3 class="font-display font-bold text-lg">Petunjuk Penggunaan MPI</h3>
+            </div>
+            <ul class="text-slate-600 text-sm space-y-3 mb-6">
+                <li class="flex items-start gap-2">
+                    <span class="text-brand-purple font-bold">1.</span>
+                    <span>Gunakan menu navigasi di bagian atas untuk berpindah modul belajar.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-brand-purple font-bold">2.</span>
+                    <span>Pelajari materi di **Modul 1** dan eksplorasi contoh di **4 Lingkungan**.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-brand-purple font-bold">3.</span>
+                    <span>Selesaikan **Tantangan Ops** untuk melatih kepekaan sosial kamu.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-brand-purple font-bold">4.</span>
+                    <span>Uji pemahaman di **Kuis Arena** untuk mengumpulkan skor XP terbanyak!</span>
+                </li>
+            </ul>
+            <button onclick="closeModal('modal-petunjuk')" class="w-full py-3 bg-brand-purple text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition">
+                Saya Mengerti!
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // State Management
+        let userXP = 0;
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let currentCaseIndex = 0;
+
+        // Data 4 Lingkungan
+        const envData = {
+            keluarga: {
+                title: "🏡 Lingkungan Keluarga",
+                hak: [
+                    "Mendapatkan kasih sayang dan perlindungan orang tua",
+                    "Mendapatkan kecukupan makanan, pakaian, & tempat tinggal",
+                    "Didengar pendapatnya saat musyawarah keluarga"
+                ],
+                kewajiban: [
+                    "Hormat dan patuh pada orang tua",
+                    "Membantu menjaga kebersihan rumah",
+                    "Belajar dengan rajin sebagai wujud tanggung jawab"
+                ],
+                color: "purple"
+            },
+            sekolah: {
+                title: "🏫 Lingkungan Sekolah",
+                hak: [
+                    "Mendapatkan bimbingan ilmu dari guru",
+                    "Menggunakan fasilitas sekolah (perpustakaan, lab)",
+                    "Merasa aman dari perundungan (bullying)"
+                ],
+                kewajiban: [
+                    "Mentaati tata tertib & seragam sekolah",
+                    "Menghormati guru & bersikap ramah pada teman",
+                    "Menjaga fasilitas & kebersihan kelas"
+                ],
+                color: "pink"
+            },
+            masyarakat: {
+                title: "👥 Lingkungan Masyarakat",
+                hak: [
+                    "Menikmati lingkungan hidup yang bersih dan sehat",
+                    "Menggunakan fasilitas umum (taman, jalan raya)",
+                    "Mendapatkan rasa aman dan bebas dari gangguan"
+                ],
+                kewajiban: [
+                    "Ikut kerja bakti & poskamling (sesuai usia)",
+                    "Menjaga ketenangan (tidak bising malam hari)",
+                    "Menghormati norma & adat istiadat setempat"
+                ],
+                color: "teal"
+            },
+            negara: {
+                title: "🇮🇩 Lingkungan Bernegara",
+                hak: [
+                    "Mendapatkan perlindungan hukum yang adil (Pasal 27 ayat 1)",
+                    "Mendapatkan pendidikan layak (Pasal 31 ayat 1)",
+                    "Bebas memeluk agama dan beribadah (Pasal 29 ayat 2)"
+                ],
+                kewajiban: [
+                    "Membayar pajak untuk pembangunan (Pasal 23A)",
+                    "Mentaati hukum & lalu lintas (Pasal 27 ayat 1)",
+                    "Ikut serta membela negara (Pasal 30 ayat 1)"
+                ],
+                color: "yellow"
+            }
+        };
+
+        // Data Studi Kasus
+        const cases = [
+            {
+                title: "Kasus 1: Balap Liar & Motor Knalpot Brong 🛵",
+                scenario: "Doni (14 tahun) suka mengendarai sepeda motor bernalpot bising keliling komplek malam hari bersama gengnya. Menurut Doni, itu adalah HAK dia untuk berekspresi dan bersenang-senang.",
+                question: "Bagaimana pendapatmu tentang tindakan Doni?",
+                options: [
+                    {
+                        text: "Tindakan Doni salah, karena hak berekspresinya melanggar hak orang lain untuk mendapatkan ketenangan.",
+                        correct: true,
+                        reason: "Tepat sekali! Hak kita dibatasi oleh hak orang lain. Doni melanggar kewajiban menjaga ketertiban umum."
+                    },
+                    {
+                        text: "Doni benar, karena jalanan publik bebas digunakan siapa saja.",
+                        correct: false,
+                        reason: "Kurang tepat. Jalan umum diatur oleh undang-undang dan ketenangan warga masyarakat wajib dihormati."
+                    }
+                ]
+            },
+            {
+                title: "Kasus 2: Menuntut Fasilitas AC Tapi Merusak Bangku 🏫",
+                scenario: "Siswa kelas 8B sering mengeluh panah dan menuntut sekolah memasang AC baru. Namun, meja dan bangku di kelas mereka banyak yang dicoret-coret dan dirusak.",
+                question: "Tindakan apa yang seharusnya dilakukan kelas 8B?",
+                options: [
+                    {
+                        text: "Tetap menuntut AC baru dulu, masalah meja rusak urusan pihak sekolah.",
+                        correct: false,
+                        reason: "Salah. Menuntut hak tanpa melaksanakan kewajiban menjaga fasilitas adalah sikap tidak seimbang."
+                    },
+                    {
+                        text: "Melaksanakan kewajiban merawat kelas dulu, baru menyampaikan aspirasi hak fasilitas dengan sopan.",
+                        correct: true,
+                        reason: "Keren! Hak dan kewajiban harus berjalan seimbang agar tercapai keadilan bersama."
+                    }
+                ]
+            },
+            {
+                title: "Kasus 3: Membuang Sampah di Sungai Saat Hujan 🌧️",
+                scenario: "Pak Budi membuang sampah kantong plastik ke sungai belakang rumah karena malas menunggu truk sampah. Saat banjir, rumah Pak Budi ikut terendam.",
+                question: "Pelajaran resiprokal apa yang bisa diambil?",
+                options: [
+                    {
+                        text: "Melalaikan kewajiban menjaga lingkungan akan merenggut hak kita sendiri atas tempat tinggal yang aman.",
+                        correct: true,
+                        reason: "Sangat tepat! Akibat melanggar kewajiban, akibat buruknya berdampak langsung pada hak hidup nyaman."
+                    },
+                    {
+                        text: "Banjir murni musibah alam, tidak ada hubungannya dengan buang sampah.",
+                        correct: false,
+                        reason: "Kurang tepat. Tindakan manusia membuang sampah sembarangan merusak ekosistem lingkungan."
+                    }
+                ]
+            }
+        ];
+
+        // Data Kuis Evaluasi
+        const quizData = [
+            {
+                q: "Apa yang dimaksud dengan Hak Warga Negara?",
+                options: [
+                    "Segala sesuatu yang wajib dikerjakan dengan paksaan",
+                    "Segala sesuatu yang seharusnya diterima/didapatkan sebagai warga negara",
+                    "Aturan tegas yang dibuat oleh kepolisian",
+                    "Tugas tambahan yang diberikan oleh guru"
+                ],
+                ans: 1,
+                explain: "Hak adalah kekuasaan atau wewenang yang seharusnya diterima seseorang sesuai aturan hukum."
+            },
+            {
+                q: "Hubungan timbal balik antara Hak dan Kewajiban disebut juga dengan istilah...",
+                options: [
+                    "Resiprokal",
+                    "Individual",
+                    "Otoriter",
+                    "Subordinasi"
+                ],
+                ans: 0,
+                explain: "Resiprokal artinya saling memengaruhi dan timbal balik, di mana hak seseorang berhubungan langsung dengan kewajiban orang lain."
+            },
+            {
+                q: "Setiap warga negara berhak mendapatkan pendidikan yang layak. Hal ini dijamin dalam UUD NRI 1945 pasal...",
+                options: [
+                    "Pasal 27 Ayat 1",
+                    "Pasal 29 Ayat 2",
+                    "Pasal 31 Ayat 1",
+                    "Pasal 34 Ayat 1"
+                ],
+                ans: 2,
+                explain: "Pasal 31 Ayat (1) menegaskan bahwa 'Setiap warga negara berhak mendapat pendidikan'."
+            },
+            {
+                q: "Manakah contoh pelaksanaan KEWAJIBAN siswa di lingkungan sekolah?",
+                options: [
+                    "Mendapatkan nilai raport di akhir semester",
+                    "Menggunakan komputer perpustakaan",
+                    "Mentaati tata tertib & menjaga kebersihan kelas",
+                    "Mendapatkan perlindungan dari guru"
+                ],
+                ans: 2,
+                explain: "Menjaga kebersihan dan taat tata tertib adalah kewajiban dasar siswa di sekolah."
+            },
+            {
+                q: "Apa akibat jika seseorang hanya menuntut Hak tetapi enggan menjalankan Kewajiban?",
+                options: [
+                    "Tercipta keharmonisan hidup",
+                    "Terjadi ketidakseimbangan dan konflik sosial",
+                    "Mendapatkan penghargaan dari pemerintah",
+                    "Hidup menjadi tenang dan tentram"
+                ],
+                ans: 1,
+                explain: "Ketidakseimbangan antara hak dan kewajiban akan memicu ketidakadilan dan pelanggaran hukum dalam masyarakat."
+            }
+        ];
+
+        // Switch Navigation Tabs
+        function switchTab(tabId) {
+            playSound('click');
+            
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Show selected tab
+            document.getElementById(`page-${tabId}`).classList.remove('hidden');
+
+            // Update Nav Styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-purple', 'text-white');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-200');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-200');
+                activeBtn.classList.add('bg-brand-purple', 'text-white');
+            }
+
+            // Custom renders on tab open
+            if (tabId === 'contoh') switchEnvTab('keluarga');
+            if (tabId === 'kasus') loadCase(0);
+        }
+
+        // Switch 4 Lingkungan Sub-tabs
+        function switchEnvTab(envKey) {
+            playSound('click');
+            const data = envData[envKey];
+            
+            // Update Tab Button Styles
+            document.querySelectorAll('.env-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-purple', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            
+            const activeNav = document.getElementById(`env-btn-${envKey}`);
+            activeNav.classList.remove('bg-slate-100', 'text-slate-600');
+            activeNav.classList.add('bg-brand-purple', 'text-white');
+
+            // Render Content
+            const container = document.getElementById('env-content-box');
+            container.innerHTML = `
+                <h3 class="font-display font-bold text-xl text-slate-800 mb-6 flex items-center gap-2">
+                    ${data.title}
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-5 rounded-xl border border-emerald-100 shadow-sm">
+                        <h4 class="font-display font-bold text-emerald-600 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i> Contoh Hak
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-700">
+                            ${data.hak.map(h => `<li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">•</span>${h}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-rose-100 shadow-sm">
+                        <h4 class="font-display font-bold text-rose-600 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check"></i> Contoh Kewajiban
+                        </h4>
+                        <ul class="space-y-2 text-sm text-slate-700">
+                            ${data.kewajiban.map(k => `<li class="flex items-start gap-2"><span class="text-rose-500 font-bold">•</span>${k}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load Interactive Case Study
+        function loadCase(index) {
+            currentCaseIndex = index;
+            const cData = cases[index];
+            document.getElementById('case-step').innerText = `Kasus ${index + 1} dari ${cases.length}`;
+            
+            const container = document.getElementById('case-container');
+            container.innerHTML = `
+                <h3 class="font-display font-bold text-lg text-indigo-900 mb-2">${cData.title}</h3>
+                <p class="text-slate-700 text-sm leading-relaxed mb-6 bg-white p-4 rounded-xl border border-slate-200">
+                    ${cData.scenario}
+                </p>
+                <h4 class="font-bold text-sm text-slate-800 mb-3">${cData.question}</h4>
+                <div class="space-y-3 mb-6">
+                    ${cData.options.map((opt, idx) => `
+                        <button onclick="checkCaseAnswer(${idx})" class="w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-brand-purple hover:bg-purple-50 transition text-sm font-medium">
+                            ${opt.text}
+                        </button>
+                    `).join('')}
+                </div>
+                <div id="case-feedback" class="hidden p-4 rounded-xl text-sm font-medium mb-4"></div>
+            `;
+        }
+
+        function checkCaseAnswer(optIdx) {
+            const cData = cases[currentCaseIndex];
+            const selectedOpt = cData.options[optIdx];
+            const feedbackBox = document.getElementById('case-feedback');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+
+            if (selectedOpt.correct) {
+                playSound('correct');
+                addXP(20);
+                feedbackBox.classList.add('bg-emerald-100', 'text-emerald-800');
+                feedbackBox.innerHTML = `<strong>✅ Benar!</strong> ${selectedOpt.reason}`;
+            } else {
+                playSound('wrong');
+                feedbackBox.classList.add('bg-rose-100', 'text-rose-800');
+                feedbackBox.innerHTML = `<strong>❌ Kurang Tepat!</strong> ${selectedOpt.reason}`;
+            }
+
+            // Next case button if applicable
+            if (currentCaseIndex < cases.length - 1) {
+                setTimeout(() => {
+                    feedbackBox.innerHTML += `
+                        <div class="mt-3">
+                            <button onclick="loadCase(${currentCaseIndex + 1})" class="px-4 py-2 bg-brand-purple text-white rounded-lg text-xs font-bold">
+                                Lanjut Kasus Berikutnya ➡️
+                            </button>
+                        </div>
+                    `;
+                }, 400);
+            }
+        }
+
+        // Quiz Logic
+        function startQuiz() {
+            playSound('click');
+            currentQuizIndex = 0;
+            quizScore = 0;
+            document.getElementById('quiz-intro').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-body').classList.remove('hidden');
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            const q = quizData[currentQuizIndex];
+            document.getElementById('quiz-progress-text').innerText = `Soal ${currentQuizIndex + 1} dari ${quizData.length}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentQuizIndex + 1) / quizData.length) * 100}%`;
+            
+            document.getElementById('quiz-question').innerText = q.q;
+            document.getElementById('quiz-feedback').classList.add('hidden');
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-xl border border-slate-200 bg-white hover:border-brand-purple hover:bg-purple-50 transition text-sm font-medium quiz-opt-btn';
+                btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                btn.onclick = () => selectQuizAnswer(idx);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectQuizAnswer(selectedIndex) {
+            const q = quizData[currentQuizIndex];
+            const feedbackBox = document.getElementById('quiz-feedback');
+            const optButtons = document.querySelectorAll('.quiz-opt-btn');
+
+            // Disable all buttons
+            optButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === q.ans) {
+                playSound('correct');
+                quizScore += 20;
+                addXP(20);
+                optButtons[selectedIndex].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                feedbackBox.className = 'p-4 rounded-xl mb-6 text-sm font-medium bg-emerald-100 text-emerald-900 border border-emerald-200';
+                feedbackBox.innerHTML = `<strong>🎉 Jawaban Benar!</strong><br>${q.explain}`;
+            } else {
+                playSound('wrong');
+                optButtons[selectedIndex].classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+                optButtons[q.ans].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                feedbackBox.className = 'p-4 rounded-xl mb-6 text-sm font-medium bg-rose-100 text-rose-900 border border-rose-200';
+                feedbackBox.innerHTML = `<strong>❌ Jawaban Salah!</strong><br>${q.explain}`;
+            }
+
+            feedbackBox.classList.remove('hidden');
+            document.getElementById('btn-next-quiz').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            currentQuizIndex++;
+            if (currentQuizIndex < quizData.length) {
+                showQuizQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            playSound('badge');
+            document.getElementById('quiz-body').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = quizScore;
+            
+            const msgEl = document.getElementById('final-message');
+            if (quizScore === 100) {
+                msgEl.innerText = "Sempurna! Kamu adalah Pelajar Pancasila Sejati yang paham betul Hak & Kewajiban! 🌟";
+            } else if (quizScore >= 60) {
+                msgEl.innerText = "Hebat! Pemahaman kamu sudah baik, tingkatkan terus pengetahuanmu! 👍";
+            } else {
+                msgEl.innerText = "Jangan berkecil hati! Pelajari kembali materi Modul 1 & 2 lalu coba lagi ya! 💪";
+            }
+        }
+
+        // Add XP helper
+        function addXP(points) {
+            userXP += points;
+            document.getElementById('user-score').innerText = `${userXP} XP`;
+        }
+
+        // Modal Helpers
+        function openModal(id) {
+            playSound('click');
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            playSound('click');
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Initial setup on load
+        window.onload = function() {
+            switchTab('home');
+        };
+    </script>
+</body>
+</html>
